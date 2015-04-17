@@ -11,6 +11,9 @@ Session.vim
 .netrwhist
 *~
 
+### MacOSX
+.DS_STORE
+
 ### Custom
 build/
 src/Assembler9.jar
