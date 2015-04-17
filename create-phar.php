@@ -16,8 +16,12 @@ if (file_exists($srcRoot."/Assembler9.jar")===false) {
     throw new Exception('Cannot find Assembler9.jar');
 }
 
-$phar = new Phar($buildRoot."/compiler.phar",
-    FilesystemIterator::CURRENT_AS_FILEINFO | FilesystemIterator::KEY_AS_FILENAME, "compiler.phar");
+$phar = new Phar(
+    $buildRoot."/compiler.phar",
+    FilesystemIterator::CURRENT_AS_FILEINFO | FilesystemIterator::KEY_AS_FILENAME,
+    "compiler.phar"
+);
+
 $phar["index.php"] = file_get_contents($srcRoot."/index.php");
 $phar["consoleFunctions.php"] = file_get_contents($srcRoot."/consoleFunctions.php");
 $phar["compiler.php"] = file_get_contents($srcRoot."/compiler.php");
