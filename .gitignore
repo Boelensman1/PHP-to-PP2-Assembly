@@ -1,4 +1,3 @@
-# Created by .ignore support plugin (hsz.mobi)
 ### PHPStorm
 *.iml
 .idea/
@@ -15,5 +14,4 @@ Session.vim
 .DS_STORE
 
 ### Custom
-build/
 src/Assembler9.jar
