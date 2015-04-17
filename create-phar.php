@@ -2,12 +2,19 @@
 
 //check php.ini
 if (ini_get('phar.readonly') != 0) {
-    echo('Please make sure phar.readonly in php.ini is set to "Off". Loaded php.ini: '.php_ini_loaded_file().PHP_EOL);
+    echo('Please make sure phar.readonly in php.ini is set to "Off". Loaded php.ini: '.php_ini_loaded_file().PHP_EOL.PHP_EOL);
     throw new Exception('Incorrect ini settings');
 }
 
 $srcRoot = "./src";
 $buildRoot = "./build";
+
+
+//check if assembler is avaialbe
+if (file_exists($srcRoot."/Assembler9.jar")===false) {
+    echo('Please download Assembler9.jar and put it into the src directory ("'.$srcRoot.'")'.PHP_EOL.PHP_EOL);
+    throw new Exception('Cannot find Assembler9.jar');
+}
 
 $phar = new Phar($buildRoot."/compiler.phar",
     FilesystemIterator::CURRENT_AS_FILEINFO | FilesystemIterator::KEY_AS_FILENAME, "compiler.phar");
