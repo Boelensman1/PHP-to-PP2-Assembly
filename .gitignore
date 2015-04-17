@@ -1,0 +1,16 @@
+# Created by .ignore support plugin (hsz.mobi)
+### PHPStorm
+*.iml
+.idea/
+
+### Vim
+[._]*.s[a-w][a-z]
+[._]s[a-w][a-z]
+*.un~
+Session.vim
+.netrwhist
+*~
+
+### Custom
+build/
+src/Assembler9.jar
