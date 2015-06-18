@@ -15,3 +15,5 @@ Session.vim
 
 ### Custom
 src/Assembler9.jar
+example/*.asm
+example/*.hex
