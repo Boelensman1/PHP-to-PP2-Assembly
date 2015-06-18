@@ -18,9 +18,9 @@ _Hex7Seg_tbl: CONS  %01111110    ;  7-segment pattern for '0'
               CONS  %00111101    ;  7-segment pattern for 'd'
               CONS  %01001111    ;  7-segment pattern for 'E'
               CONS  %01000111    ;  7-segment pattern for 'F'
-_Hex7Seg_bgn:   AND  R5  %01111   ;  R0 := R0 MOD 16 , just to be safe...
-              LOAD  R4  [SP++]   ;  R4 := address(tbl) (retrieve from stack)
-              LOAD  R4  [R4+R5]  ;  R4 := tbl[R0]
+_Hex7Seg_bgn: AND  R5  %01111   ;  R0 = R0 MOD 16 , just to be safe...
+              LOAD  R4  [SP++]   ;  R4 = address(tbl) (retrieve from stack)
+              LOAD  R4  [R4+R5]  ;  R4 = tbl[R0]
               LOAD  R5  ".IOAREA."
               STOR  R4  [R5+".DSPSEG."] ; and place this in the Display Element
                RTS";
@@ -29,6 +29,7 @@ $this->_defaultFunctions['display'] = explode("\n", $this->_defaultFunctions['di
 $this->_defaultFunctions['sleep'] = "
 ;sleep
 _timer: MULS  R5  10
+        PUSH  R4
         LOAD  R4  R5
         LOAD  R5  ".IOAREA."
         LOAD  R5  [R5+".TIMER."]
@@ -36,11 +37,11 @@ _timer: MULS  R5  10
         LOAD  R4  ".IOAREA."
 _wait:  CMP   R5  [R4+".TIMER."]       ;  Compare the timer to 0
         BMI   _wait
+        PULL  R4
         RTS";
 $this->_defaultFunctions['sleep'] = explode("\n", $this->_defaultFunctions['sleep']);
 
 $this->_defaultFunctions['pow'] = "
-;pow
 _pow:   	CMP R4 0
             BEQ _pow1
             CMP R4 1
@@ -63,8 +64,8 @@ _powR:      RTS";
 $this->_defaultFunctions['pow'] = explode("\n", $this->_defaultFunctions['pow']);
 
 $this->_defaultFunctions['pressed'] = "
-;pressed
-_pressed: 	PUSH R4
+_pressed: 	PUSH R4 ;make sure all vars are the same at the end
+            PUSH R5
             LOAD R4 R3
             LOAD R5 2
             BRS _pow
@@ -73,7 +74,12 @@ _pressed: 	PUSH R4
             LOAD R4 [R5+".INPUT."]
             DIV R4 R3
             MOD R4 2
-            LOAD R5 R4
+
+            PUSH R4 ;the result
+            ADD SP 1 ;decrease the SP so we get the correct pulls
+
+            PULL R5
             PULL R4
+
             RTS";
 $this->_defaultFunctions['pressed'] = explode("\n", $this->_defaultFunctions['pressed']);
