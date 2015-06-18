@@ -1,5 +1,7 @@
 <?php namespace AssemblyCompiler;
 
+/* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
+
 require_once 'consoleFunctions.php';
 require_once 'compiler.php';
 
@@ -13,6 +15,9 @@ unset($arguments[0]);//first one is location of script
 $verboseLevel = 0;
 $outPath = null;
 $filePath = null;
+$insertComments = false;
+$assemble = true;
+$workingDir=getcwd();
 
 foreach ($arguments as $argument) {
     if (!preg_match('/^--(\w+)=?(.*)?$/', $argument, $argumentParsed)) {
@@ -21,15 +26,24 @@ foreach ($arguments as $argument) {
     }
     switch ($argumentParsed[1]) {
         case 'file': {
-            $filePath = $argumentParsed[2];
+            $filePath = $workingDir.DIRECTORY_SEPARATOR.$argumentParsed[2];
             break;
         }
         case 'out': {
-            $outPath = $argumentParsed[2];
+            $outPath = $workingDir.DIRECTORY_SEPARATOR.$argumentParsed[2];
             break;
         }
         case 'verbose': {
             $verboseLevel = (int) $argumentParsed[2];
+            break;
+        }
+        case 'assemble':
+        {
+            $assemble=false;
+            break;
+        }
+        case 'comments': {
+            $insertComments=true;
             break;
         }
         case 'help': {
@@ -66,12 +80,16 @@ $file = file_get_contents($filePath);
 $compiler = new Compiler();
 $compiler->debug = ($verboseLevel > 0);
 $compiler->maxVariables = 5;
+$compiler->insertComments=$insertComments;
 $compiler->loadCode($file);
 $compiled = $compiler->compile();
 echoConsole($compiled, 2);
 file_put_contents($outPath, $compiled);
 
 //compile to code the processor understands
-echoConsole(shell_exec('Java -jar "./Assembler9.jar" "'.$outPath.'"'), 1);
+if ($assemble)
+{
+	echoConsole(shell_exec('java -jar "./Assembler9.jar" "'.$outPath.'"'), 1);
+}
 
 echoConsole('Succesfully compiled.');
